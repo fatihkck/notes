@@ -1,0 +1,2 @@
+--It is give you row number with group by
+SELECT  C.COUNTRY_ID,C.COUNTRY_NAME, C.REGION_ID, DENSE_RANK() OVER (ORDER BY  C.COUNTRY_ID,C.REGION_ID ) AS RowNumber  FROM COUNTRIES C;

@@ -1,0 +1,56 @@
+DECLARE
+  DEPARTMENT_ID INTEGER;
+BEGIN
+  IF DEPARTMENT_ID IS NULL THEN
+    null;
+    --RAISE VALUE_ERROR;
+    --RAISE_APPLICATION_ERROR(-20500, 'Employee must be not null');
+  END IF;
+END;
+
+/
+
+
+CREATE OR REPLACE PROCEDURE PROCESS_BALANCE(BALANCE_IN IN NUMBER) IS
+  E_BALANCE_TOO_LOW EXCEPTION;
+  PRAGMA EXCEPTION_INIT(E_BALANCE_TOO_LOW, -20000);
+BEGIN
+  IF BALANCE_IN < 1000 THEN
+    RAISE E_BALANCE_TOO_LOW;
+  END IF;
+END PROCESS_BALANCE;
+
+/
+
+  /*
+  
+  WHEN NO_DATA_FOUND 
+    THEN 
+      
+    WHEN NO_DATA_FOUND OR
+         DUP_VAL_ON_INDEX
+    THEN 
+      
+     WHEN OTHERS 
+    THEN 
+      
+    */
+    
+    /
+    
+    /*
+    DECLARE
+  l_number   NUMBER (1) := 100;
+BEGIN
+  statement1;
+  ...
+  statementN;
+EXCEPTION
+  WHEN OTHERS
+  THEN
+    DBMS_OUTPUT.put_line (SQLCODE);
+    
+END;
+
+*/
+    

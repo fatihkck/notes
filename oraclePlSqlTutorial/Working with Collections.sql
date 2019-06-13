@@ -1,0 +1,182 @@
+/*BULK COLLECT. SELECT statements that retrieve multiple rows with a single fetch, increasing the speed of data retrieval.
+
+FORALL. Inserts, updates, and deletes that use collections to change multiple rows of data very quickly
+
+Table functions. PL/SQL functions that return collections and can be called in the FROM clause of a SELECT statement.*/
+
+--Nested table example
+
+DECLARE
+  TYPE LIST_OF_NAMES_T IS TABLE OF VARCHAR2(100);
+
+  HAPPYFAMILY LIST_OF_NAMES_T := LIST_OF_NAMES_T();
+  CHILDREN    LIST_OF_NAMES_T := LIST_OF_NAMES_T();
+  PARENTS     LIST_OF_NAMES_T := LIST_OF_NAMES_T();
+BEGIN
+  HAPPYFAMILY.EXTEND(4);
+  HAPPYFAMILY(1) := 'test1';
+  HAPPYFAMILY(2) := 'test2';
+  HAPPYFAMILY(3) := 'test3';
+  HAPPYFAMILY(4) := 'fatih';
+
+  CHILDREN.EXTEND;
+  CHILDREN(CHILDREN.LAST) := 'test1';
+  CHILDREN.EXTEND;
+  CHILDREN(CHILDREN.LAST) := 'test2';
+
+  PARENTS := HAPPYFAMILY MULTISET EXCEPT CHILDREN;
+
+  FOR L_ROW IN 1 .. PARENTS.COUNT
+  LOOP
+    DBMS_OUTPUT.PUT_LINE(PARENTS(L_ROW));
+  END LOOP;
+END;
+
+/
+
+DECLARE TYPE NUMBERS_NT IS TABLE OF NUMBER;
+V_NUMBER NUMBERS_NT;
+BEGIN
+
+  V_NUMBER := NUMBERS_NT(1, 2, 3);
+  V_NUMBER.EXTEND;
+  V_NUMBER(4) := 4;
+  V_NUMBER.EXTEND(2);
+  V_NUMBER(5) := 5;
+  V_NUMBER(6) := 6;
+
+  FOR N IN 1 .. V_NUMBER.COUNT
+  LOOP
+    DBMS_OUTPUT.PUT_LINE(V_NUMBER(N));
+  END LOOP;
+END;
+
+/
+
+DECLARE TYPE NUMBERS_AAT IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
+V_NUMBERS NUMBERS_AAT;
+
+BEGIN
+  V_NUMBERS(100) := 12345;
+  DBMS_OUTPUT.PUT_LINE(V_NUMBERS(100));
+  /* FOR N IN 1 .. V_NUMBERS.COUNT
+  LOOP
+    DBMS_OUTPUT.PUT_LINE(V_NUMBERS(N));
+  END LOOP;*/
+END;
+
+/
+
+DECLARE TYPE NUMBERS_AAT IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
+V_NUMBERS1 NUMBERS_AAT;
+V_NUMBERS2 NUMBERS_AAT;
+BEGIN
+  V_NUMBERS1(100) := 12345;
+  V_NUMBERS2 := V_NUMBERS1;
+   DBMS_OUTPUT.PUT_LINE(V_NUMBERS2(100));
+END;
+
+
+/
+
+DECLARE
+   TYPE numbers_aat IS TABLE OF NUMBER
+      INDEX BY PLS_INTEGER;
+   V_numbers   numbers_aat;
+
+   PROCEDURE empty_collection (
+      numbers_io IN OUT numbers_aat)
+   IS
+   BEGIN
+     DBMS_OUTPUT.PUT_LINE(numbers_io(100));
+      numbers_io.delete;
+ 
+   END;
+BEGIN
+   V_numbers (100) := 123;
+   empty_collection (V_numbers);
+END;
+
+
+
+/
+
+
+DECLARE
+   TYPE numbers_aat IS TABLE OF NUMBER
+      INDEX BY PLS_INTEGER;
+
+   V_numbers   numbers_aat;
+BEGIN
+     SELECT employee_id
+       BULK COLLECT INTO V_numbers
+       FROM employees
+   ORDER BY last_name;
+   
+   FOR N IN V_NUMBERS.FIRST .. V_NUMBERS.LAST
+     LOOP
+        DBMS_OUTPUT.PUT_LINE('employee_id : ' || V_NUMBERS(N));
+       END LOOP;
+END;
+
+/
+
+CREATE OR REPLACE PROCEDURE SHOW_CONTENTS(NAMES_IN IN DBMS_UTILITY.MAXNAME_ARRAY) IS
+BEGIN
+
+  IF NAMES_IN.FIRST IS NULL THEN
+    DBMS_OUTPUT.PUT_LINE('Collection empty!');
+    RETURN;
+  END IF;
+
+  --FOR INDX IN REVERSE NAMES_IN.FIRST .. NAMES_IN.LAST
+  FOR INDX IN NAMES_IN.FIRST .. NAMES_IN.LAST
+  LOOP
+    DBMS_OUTPUT.PUT_LINE(NAMES_IN(INDX));
+  END LOOP;
+END;
+/
+
+DECLARE L_NAMES DBMS_UTILITY.MAXNAME_ARRAY;
+BEGIN
+L_NAMES(100) := 'FATIH'; L_NAMES(101) := 'FAT'; L_NAMES(102) := 'KOÇAK'; SHOW_CONTENTS(L_NAMES);
+END;
+
+/
+
+CREATE OR REPLACE PROCEDURE SHOW_CONTENTS_V1(NAMES_IN IN DBMS_UTILITY.MAXNAME_ARRAY) IS
+L_INDEX PLS_INTEGER := NAMES_IN.FIRST;
+BEGIN
+WHILE(L_INDEX IS
+NOT NULL) LOOP DBMS_OUTPUT.PUT_LINE(NAMES_IN(L_INDEX)); L_INDEX := NAMES_IN.NEXT(L_INDEX);
+END LOOP;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE SHOW_CONTENTS_V2(NAMES_IN IN DBMS_UTILITY.MAXNAME_ARRAY) IS
+  L_INDEX PLS_INTEGER := NAMES_IN.LAST;
+BEGIN
+  WHILE (L_INDEX IS NOT NULL)
+  LOOP
+    DBMS_OUTPUT.PUT_LINE(NAMES_IN(L_INDEX));
+    L_INDEX := NAMES_IN.PRIOR(L_INDEX);
+  END LOOP;
+END;
+
+/
+
+/*Deleting Collection Elements
+
+Remove all elements from a collection
+v_names.DELETE;
+
+Remove the first element in a collection
+v_names.DELETE (v_names.FIRST);
+
+Remove all the elements between the specified low and high index values
+v_names.DELETE (100, 200);
+
+
+v_names.TRIM;
+v_names.TRIM (3);
+*/

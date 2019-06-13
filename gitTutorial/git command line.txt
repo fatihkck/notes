@@ -1,0 +1,83 @@
+bash
+git init
+
+git config --list
+git config --global user.name
+git config --global user.email
+
+git config --global user.name "Fatih Koçak"
+
+git help commit
+-commit ile iligli dökümantasyonu açar
+
+pwd
+-mevcut dizini gösteriri
+
+ls
+-mevcut dizindeki dosyaları gösterir
+
+ls -la
+-gizli dosyalarıda gösteriri
+
+#commit
+
+git add .
+mevcut dizideki değişikliği stage ekler. 
+
+git add "filename"
+ilgili dosyayı stage ekler
+
+git commit -m "This is our first commit"
+değişiklikleri gönderir
+
+# Adding Files and the Commit Log
+
+git log
+-commit geçmişini gösterir
+
+git log --author="Fıtı Fıtı"
+-sadece ilgili kullanıcının commit geçmişini gösterir
+
+git status
+-ilgili projede herhangi bir değişiklik var mı gösterir(changes)
+
+#Git Workflow
+
+working copy > staging area > repository
+
+-working copy(local computer(master)) katmanı
+
+-Staging area "git add" komutunu kulanarak dosyayı ekledin katman 
+buraya eklenen dosyalar "commit" lenmeye hazır demek.
+
+-Repository "commit" sonrası gidilen nihayi katman
+
+#Viewing the Changes That You Made
+
+git diff
+- working copy ve repository arasındaki farkı gösterir. 
+commit yapıldıktan sonra yapılan değişikliği göstermez
+
+#Comparing the Staging Area with the Repository
+git diff -staged
+
+#How to Delete Files
+git rm "filename"
+git status
+git commit -m "this is the point in time where we delete file"
+
+#How to Move and Rename Files
+change file name
+git status
+git add "renamefile"
+git frm "oldnamefile"
+git commit -m "renamed oldname to home rename"
+
+short(move)
+git mv "oldnamefile" "renamefile"
+git commit -m "renamed file"
+
+
+
+
+

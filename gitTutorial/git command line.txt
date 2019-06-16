@@ -91,4 +91,5 @@ git checkout "logid"
 #Pushing to a GitHub Repository
 
 git remote add "reporname" url
+git push
 

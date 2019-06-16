@@ -78,6 +78,12 @@ git mv "oldnamefile" "renamefile"
 git commit -m "renamed file"
 
 
+#How to Commit Directly to the Repository
+git commit -am "Cleaned up the"
 
+#Checkout 
+git checkout -- index.html
+yapılan değişikliği geri alır. Repository'den en son halini getirir.
 
-
+#Getting Old Versions from the Repository
+git checkout "logid"

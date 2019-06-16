@@ -87,3 +87,8 @@ yapılan değişikliği geri alır. Repository'den en son halini getirir.
 
 #Getting Old Versions from the Repository
 git checkout "logid"
+
+#Pushing to a GitHub Repository
+
+git remote add "reporname" url
+
